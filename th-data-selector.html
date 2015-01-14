@@ -17,30 +17,73 @@ A Thelma component providing solution to no problem in particular.
   <template>
     <link rel="stylesheet" href="th-data-selector.css">
     <template repeat="{{field, index in dataFields}}">
-    <label for="field_selector">Select column for {{field}}: </label> 
-    <core-selector id="field_selector"  valueattr="label">
-        <template repeat="{{attr in inputAttributes}}">
-          <div class="col" data-field="{{field}}" on-click="{{mapOutput}}" data-label="{{attr}}">{{attr}}</div>
-        </template>
-    </core-selector>
+      <div class="select-menu">
+        <label for="field_selector">Select column for {{field.name}}: </label> 
+        <core-selector id="field_selector"  valueattr="label">
+            <template repeat="{{attr in inputAttributes}}">
+              <div class="col" data-field="{{field.name}}" data-required="{{field.required}}" data-type="{{field.type}}" on-click="{{mapOutput}}" data-selected="{{attr}}">{{attr}}</div>
+            </template>
+        </core-selector>
+      </div>
     </template>
+    <br>
+    <div id="button" on-click="{{setOutput}}">Submit</div>
   </template>
 
   <script>
     Polymer({
       input: [{"testlabel":"akjdals","testvalue":5},{"testlabel":"as","testvalue":10}],
-      dataFields: ["label", "value", "display_value"],
+      dataFields: [ { "name":"label", "type":"string", "required":true},
+                    { "name":"value", "type":"num", "required":true},
+                    { "name":"display_value", "type":"string"}
+      ],
       ready: function () {
+        var self = this;
+        self.inputAttributes = Object.keys(self.input[0]);
+        self._output = self.input;
+        // self.dataFieldsChanged();
+      },
+      inputChanged: function(){
         var self = this;
         self.inputAttributes = Object.keys(self.input[0]);
         self.output = self.input;
       },
+      // dataFieldsChanged: function(){
+      //   var self = this;
+      //   self.selections = {};
+      //   for (var i=0; i<self.dataFields.length;i++){
+      //     self.selections[self.dataFields[i].name] = false;
+      //   }
+
+      //   console.log(self.selections);
+      // },
+      // selectColumn: function(e, detail, selection){
+      //   var self = this;
+      //   self.selections[selection.dataset.field] = selection.dataset.selected;
+      //   var selectionsMade = false;
+      //   for(var i=0; i<self.dataFields.length;i++){
+
+      //   }
+
+      //   self.mapOutput(selection)
+      // },
       mapOutput: function(e, detail, selection){
         var self = this;
-        for (var i=0;i<self.output.length; i++){
-          self.output[i][selection.dataset.field] = self.output[i][selection.dataset.label];
+        for (var i=0;i<self._output.length; i++){
+
+          if(selection.dataset.type ==="num" || selection.dataset.type ==="float"){
+            self._output[i][selection.dataset.field] = parseFloat(self._output[i][selection.dataset.selected]);  
+          } else if(selection.dataset.type ==="int"){
+            self._output[i][selection.dataset.field] = parseInt(self._output[i][selection.dataset.selected]);  
+          } else {
+            self._output[i][selection.dataset.field] = self._output[i][selection.dataset.selected];
+          }
         }
-        console.log(self.output);
+        console.log(self._output);
+      },
+      setOutput: function(){
+        var self = this;
+        self.output = self._output;
       }
     });
   </script>
