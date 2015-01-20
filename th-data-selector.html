@@ -80,9 +80,9 @@ A Thelma component providing solution to no problem in particular.
         for(var i=0; i<fields.length; i++){
           for (var index=0;index<self._output.length; index++){
             if (fields[i].type == "num"){
-              self._output[index][fields[i].name] = self._output[index][numField];
+              self._output[index][fields[i].name] = self._output[index][fields[i].name] || self._output[index][numField];
             } else {
-              self._output[index][fields[i].name] = self._output[index][self.inputAttributes[i]];  
+              self._output[index][fields[i].name] = self._output[index][fields[i].name] || self._output[index][self.inputAttributes[i]];  
             }
           }
         }
