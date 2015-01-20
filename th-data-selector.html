@@ -39,8 +39,11 @@ A Thelma component providing solution to no problem in particular.
       ],
       ready: function () {
         var self = this;
+        console.log("***");
+        console.log(self.input);
         self.inputAttributes = Object.keys(self.input[0]);
         self._output = self.input;
+        self.selectDefaultFields();
         // self.dataFieldsChanged();
       },
       inputChanged: function(){
@@ -67,6 +70,31 @@ A Thelma component providing solution to no problem in particular.
 
       //   self.mapOutput(selection)
       // },
+      selectDefaultFields: function(){
+        var self = this;
+        // TODO: make more dynamic. Currently defaults to the first number field for all fields of number type
+        var numField = self.findValueField(self._output[0]);
+
+        var fields = self.dataFields.filter(function(field){ return field.required});
+        // Sets value field equal to the first with number type
+        for(var i=0; i<fields.length; i++){
+          for (var index=0;index<self._output.length; index++){
+            if (fields[i].type == "num"){
+              self._output[index][fields[i].name] = self._output[index][numField];
+            } else {
+              self._output[index][fields[i].name] = self._output[index][self.inputAttributes[i]];  
+            }
+          }
+        }
+
+      },
+      findValueField: function(obj){ 
+        for (var prop in obj){
+          if (parseInt(obj[prop])){
+            return prop;
+          }
+        }
+      },
       mapOutput: function(e, detail, selection){
         var self = this;
         for (var i=0;i<self._output.length; i++){
@@ -83,7 +111,8 @@ A Thelma component providing solution to no problem in particular.
       },
       setOutput: function(){
         var self = this;
-        self.output = self._output;
+
+        self.output = self._output.map(function(row){return row;}); // Remap data to trigger change watcher
       }
     });
   </script>
