@@ -42,14 +42,16 @@ A Thelma component providing solution to no problem in particular.
         console.log("***");
         console.log(self.input);
         self.inputAttributes = Object.keys(self.input[0]);
-        self._output = self.input;
+        // self._output = self.input;
         self.selectDefaultFields();
         // self.dataFieldsChanged();
       },
       inputChanged: function(){
         var self = this;
+        console.log("*!*!*!");
+        console.log(self.input[0]);
         self.inputAttributes = Object.keys(self.input[0]);
-        self.output = self.input;
+        // self.output = self.input;
       },
       // dataFieldsChanged: function(){
       //   var self = this;
@@ -70,22 +72,38 @@ A Thelma component providing solution to no problem in particular.
 
       //   self.mapOutput(selection)
       // },
+      cloneInput: function(){
+        var self = this;
+        self._output = self.input.map(function(item){
+          var newItem = {};
+          var keys = Object.keys(item);
+          
+          keys.forEach(function(key) {
+            newItem[key] = item[key];
+          })
+          return newItem;
+        })
+        // console.log()
+      },
       selectDefaultFields: function(){
         var self = this;
+        self.cloneInput();
         // TODO: make more dynamic. Currently defaults to the first number field for all fields of number type
         var numField = self.findValueField(self._output[0]);
-
+console.log("number field");
+console.log(numField);
         var fields = self.dataFields.filter(function(field){ return field.required});
         // Sets value field equal to the first with number type
         for(var i=0; i<fields.length; i++){
           for (var index=0;index<self._output.length; index++){
             if (fields[i].type == "num"){
-              self._output[index][fields[i].name] = self._output[index][fields[i].name] || self._output[index][numField];
+              self._output[index][fields[i].name] = parseInt(self._output[index][fields[i].name]) || parseInt(self._output[index][numField]);
             } else {
               self._output[index][fields[i].name] = self._output[index][fields[i].name] || self._output[index][self.inputAttributes[i]];  
             }
           }
         }
+        self.setOutput();
 
       },
       findValueField: function(obj){ 
@@ -97,6 +115,7 @@ A Thelma component providing solution to no problem in particular.
       },
       mapOutput: function(e, detail, selection){
         var self = this;
+        // self.cloneInput();
         for (var i=0;i<self._output.length; i++){
 
           if(selection.dataset.type ==="num" || selection.dataset.type ==="float"){
