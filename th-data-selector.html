@@ -52,6 +52,7 @@ A Thelma component providing solution to no problem in particular.
         console.log(self.input[0]);
         self.inputAttributes = Object.keys(self.input[0]);
         // self.output = self.input;
+        // TODO: NEED TO REMAP THE OUTPUT HERE;
       },
       // dataFieldsChanged: function(){
       //   var self = this;
@@ -133,6 +134,19 @@ console.log(numField);
 
         self.output = self._output.map(function(row){return row;}); // Remap data to trigger change watcher
       }
+
+            // NOTES:
+
+
+      // data is not going thru data selector automatically (when selection is already made)
+      // charts that use data selector still dont initialze properly (is that because its selecting the wrong default data?)
+      // data-selector needs an input change watcher to remap the data to output automatically
+      // when data is selected if it changes, chart should change too.
+      // fix data selector so if the fields are available, it selects those 
+      // fix data selector so if that it picks first numerical column for value
+      // the data selector is getting the intermediate input variables from the chart?!
+      // 
+
     });
   </script>
 </polymer-element>
